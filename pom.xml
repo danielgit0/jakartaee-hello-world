@@ -26,7 +26,27 @@
         <spotless.version>2.43.0</spotless.version>
         <checkstyle.version>3.6.0</checkstyle.version>
         <pmd.version>3.26.0</pmd.version>
+
+        <!-- Test versions -->
+        <junit.version>5.12.2</junit.version>
+        <mockito.version>5.17.0</mockito.version>
+        <arquillian-bom.version>1.9.4.Final</arquillian-bom.version>
+        <arquillian-payara.version>3.1</arquillian-payara.version>
+        <surefire.version>3.5.3</surefire.version>
+        <failsafe.version>3.5.3</failsafe.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
@@ -40,6 +60,56 @@
             <artifactId>payara-micro</artifactId>
             <version>${payara.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- Unit test dependencies -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Integration test dependencies -->
+        <dependency>
+            <groupId>org.jboss.arquillian.junit5</groupId>
+            <artifactId>arquillian-junit5-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>fish.payara.arquillian</groupId>
+            <artifactId>arquillian-payara-micro-managed</artifactId>
+            <version>${arquillian-payara.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- JAX-RS client implementation for integration tests (ClientBuilder) -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>3.1.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>3.1.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>3.1.10</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -131,6 +201,37 @@
                         <ruleset>rulesets/java/quickstart.xml</ruleset>
                     </rulesets>
                 </configuration>
+            </plugin>
+            <!-- Surefire: run unit tests, exclude ITs -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*IT.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <!-- Failsafe: run integration tests against embedded Payara Micro -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>${failsafe.version}</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <payara.microJar>${settings.localRepository}/fish/payara/extras/payara-micro/${payara.version}/payara-micro-${payara.version}.jar</payara.microJar>
+                        <payara.contextRoot>/</payara.contextRoot>
+                    </systemPropertyVariables>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
