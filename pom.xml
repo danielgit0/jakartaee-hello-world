@@ -152,6 +152,7 @@
                     <modelPackage>org.eclipse.jakarta.generated.hello.model</modelPackage>
                     <apiNameSuffix>Resource</apiNameSuffix>
                     <cleanupOutput>true</cleanupOutput>
+                    <generateSupportingFiles>false</generateSupportingFiles>
                     <configOptions>
                         <sourceFolder>src/gen/java/main</sourceFolder>
                         <useJakartaEe>true</useJakartaEe>

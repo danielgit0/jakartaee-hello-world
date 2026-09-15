@@ -8,8 +8,9 @@ import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.net.URL;
+import org.eclipse.jakarta.generated.hello.api.HelloWorldResource;
+import org.eclipse.jakarta.generated.hello.model.Hello;
 import org.eclipse.jakarta.hello.HelloApplication;
-import org.eclipse.jakarta.hello.hello.service.Hello;
 import org.eclipse.jakarta.hello.hello.service.HelloService;
 import org.eclipse.jakarta.hello.hello.service.HelloServiceImpl;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -31,6 +32,7 @@ class HelloWorldResourceIT {
         .addClasses(
             HelloApplication.class,
             HelloWorldResource.class,
+            HelloWorldResourceImpl.class,
             HelloService.class,
             HelloServiceImpl.class,
             Hello.class)
