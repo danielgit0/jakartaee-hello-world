@@ -1,0 +1,38 @@
+openapi: 3.0.3
+info:
+  title: Hello World API
+  version: 1.0.0
+  description: A simple API that returns a greeting message.
+tags:
+  - name: HelloWorld
+    description: Operations for greeting.
+paths:
+  /hello:
+    get:
+      summary: Say Hello
+      tags:
+        - HelloWorld
+      description: Returns a greeting object. If no name is provided, it defaults to greeting the world.
+      parameters:
+        - name: name
+          in: query
+          description: The name of the person to greet.
+          required: false
+          schema:
+            type: string
+            default: world
+      responses:
+        '200':
+          description: A successful greeting response.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hello'
+components:
+  schemas:
+    Hello:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Hello, world!

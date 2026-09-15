@@ -26,6 +26,9 @@
         <spotless.version>2.43.0</spotless.version>
         <checkstyle.version>3.6.0</checkstyle.version>
         <pmd.version>3.26.0</pmd.version>
+        <openapi-generator.version>7.13.0</openapi-generator.version>
+        <swagger-annotations.version>1.6.14</swagger-annotations.version>
+        <jackson-annotations.version>2.18.3</jackson-annotations.version>
 
         <!-- Test versions -->
         <junit.version>5.12.2</junit.version>
@@ -53,6 +56,20 @@
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-web-api</artifactId>
             <version>${jakartaee-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Swagger 1.x annotations used by the generated JAX-RS interfaces (io.swagger.annotations.*) -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>${swagger-annotations.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- Jackson annotations used by the generated model classes -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson-annotations.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -116,6 +133,34 @@
     <build>
         <finalName>jakartaee-hello-world</finalName>
         <plugins>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${openapi-generator.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <inputSpec>${project.basedir}/openapi.yml</inputSpec>
+                    <generatorName>jaxrs-spec</generatorName>
+                    <output>${project.build.directory}/generated-sources/openapi</output>
+                    <apiPackage>org.eclipse.jakarta.generated.hello.api</apiPackage>
+                    <modelPackage>org.eclipse.jakarta.generated.hello.model</modelPackage>
+                    <apiNameSuffix>Resource</apiNameSuffix>
+                    <cleanupOutput>true</cleanupOutput>
+                    <configOptions>
+                        <sourceFolder>src/gen/java/main</sourceFolder>
+                        <useJakartaEe>true</useJakartaEe>
+                        <interfaceOnly>true</interfaceOnly>
+                        <returnResponse>false</returnResponse>
+                        <useTags>true</useTags>
+                    </configOptions>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
